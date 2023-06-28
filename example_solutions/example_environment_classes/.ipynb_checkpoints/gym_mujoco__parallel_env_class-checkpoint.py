@@ -27,7 +27,8 @@ class MujocoGymNumStateContActions:
         return initial_state
         
     def take_action(self, actions):
-        nextstates, rewards, dones, truncated, info = self.envs.step(actions)
+        nextstates, rewards, terminated, truncated, info = self.envs.step(actions)
+        dones = terminated | truncated
         return nextstates, rewards, dones
     
     def exit_env(self):
@@ -40,11 +41,11 @@ class MujocoGymNumStateContActions:
         i = 0
         while True:
             action = agent.act(state)
-            nextstate, reward, done, truncated, info = env.step(action)
+            nextstate, reward, terminated, truncated, info = env.step(action)
             score += (reward - score)/(i+1)
             print(f"\r score @ {i} = {score}", end="")
             state = nextstate
-            if (done == True) or (i >= tmax):
+            if terminated or truncated or (i >= tmax):
                 break
             i += 1
         env.close()

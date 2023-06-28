@@ -1,0 +1,99 @@
+Pins Recommendation
+
+Approach 1.
+- Use pins to pins relationship graph, pin A to pin B undirected edge with weight = N(A Int B)/N(A Union B)
+- N(A Int B) is the number of boards in which A and B appear, and N(A Union B) is the number of boards in which either A or B appear.
+- Factorize the graph using Node2Vec or DeepRandomWalk - context less representations
+- Or use skipgram model over boards as sentences.
+
+Approach 2.
+- Link prediction model (Jaccard similarity, negative sampling) to predict existence of link given the image, text (caption), etc. 
+- Unlike the approache above, which can only be used in transductive way, this methodology can be used to generate representations
+- for a new pin as well. For link prediction we can use a syamese network, in which each head of syamese network is a multi-modal network,
+- using image features generated from a pretrained image model like EfficientNetV2. Using text representations as an output from a pre-trained
+- LLM like LLAMA, GPT-3, Roberta, etc.
+
+Approach 1 might be better for warm pins, approach 2 might be better for cold pins
+
+
+Pre-compute
+    - using past day, week, etc of the user generate user level representation as an average of pins representations.
+    - generate board level representations as average of pin representations
+    - cache pin level representations
+    
+In real time - retreival
+    - Update board representation with each addition
+    - Update user representation with each click or maintain a running mean of user's session representation
+    - ANN search for each board representation and get top x results.
+    - ANN search for user representation and get top y results.
+    - You may want to get more results corresponding to the new board i.e. the board which is recently filled in e.g. last 2 additions, last addition, etc.
+
+Ranking
+
+    Features
+
+    max of board to pin similarity, 
+    user to pin similarity - 1 day, 7 day, current session, etc.
+    CTR of pin 1 day, 7 day, 30 days, etc.
+    pin additions in last 1 day, 7 day, 30 days, etc
+    CTR pin cluster level
+
+    Label
+    
+    clicks/ views = 1 [I have seen pinterest and used it as well, pin clicks are out of interest even if they are not added into the board, and sometimes they inspire people to create new boards]
+    no clicks/ views = 0
+    
+    Classification Model
+    
+    P(click / view, X) will be trained using historical views and clicks data.
+    
+    Exposure Bias: 
+    1. To handle exposure bias we are going to train a epstemic uncertainty aware model and sample a UCB from that model. Epstemic uncertainty is not easy to estimate.
+    2. Use a random budget of epislon positions to populate with random items from the retrieved list and hence generate the ranked list.
+    
+    Position Bias:
+    Use position level CTR and position level 1-CTR to enhance the weight of larger rank clicks and reduce the weight of lower rank clicks, and also to enhance to weight of lower rank non-clicks and
+    reduce the weight of larger rank clicks.
+    
+Evaluation
+    Offline
+        Ranking model - NDCG@k
+    
+    Online
+        Click through rate @5
+        Average Engagement -  pins clicked / session, pins added per session
+        
+        A/B test
+        
+Monitoring
+    peak number of requests per second per server and overall - Load balancer metrics
+    Availability - API response failures
+    Concurrency - peak number of requests simultaneously
+    CTR @5 for web, CTR @2 for App
+    feature means, standard deviations
+    retrieved results per recommendation
+    score distribution as output from the ranker
+    
+APIs
+    API 1: pin representation
+        - called everytime a new pin is onboarded
+        - generates representation for that pin
+        - adds the pin with representation into the db
+    
+    API 2: retrieval
+        - called with a representation every time a recommendations are required, also how many results are needed
+        - generate to x ANN from the sharded DB
+        
+    API 3: ranking
+        - gets a call for user x each retrieved pin
+        - outputs a epsilon greedy CTR
+        
+    API 4: training
+        - Representation train every week or so, depends on the velocity of new pins getting generated.
+        - Ranking training every month.
+        
+    API 5: update historical aggregates in near real time, CTR, etc
+
+Deployment
+    
+

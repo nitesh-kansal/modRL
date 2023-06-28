@@ -1,0 +1,32 @@
+On the product detail page, once the customer enters a pincode, we show estimated delivery dates to the customers.
+
+There is three different set of inventory available with walmart 
+1. Inventory which is owned by walmart and shipped by walmart, 
+    Here the product is stored in walmart owned warehouses and shipping method is pre-decided by walmart.
+    So the procurement time or lag time is negligble and transit time is pre-measured, may be not that accurately but close.
+2. Inventory which is owned by third party and shipped by walmart,
+    Here also its similar.
+3. Inventory which is 3P owned and 3P shipped.
+    In this case we don't know how much time will it take for the seller to procure, if not already available. 
+    And how much time, and which FC will the seller ship from and which shipping method will the seller select.
+    Sellers do provide an estimate here, but the estimates are way too conservative in nature. There is an average
+    difference of 3 days between promise date and delivery date.
+
+Its the third case, that i am building an ML model for, i.e., estimating a better delivery time for offers sold
+by 3P sellers.
+
+In collaboration with junior scientists and engineers we have built the following parts
+    1. Lag time estimation or procurement time estimation
+    2. FC node classification i.e. given an order at any point of time which FC node is likely to be selected
+        for shipment for a particular order. Figuring out this part will allow us to do the next part i.e.
+    3. Given an FC location, size of box, customer location, etc estimate the time taken in transit.
+    
+The first part and the second part was posed as an ordinal regression problem and the second part was posed 
+as a binary classification problem with negative samples.
+
+For the first and the second part we consumed all sorts of product features like title representations, 
+image representations, product attributes, seller features like seller id, seller type, etc.
+
+For the second part we used many location related features to and from location, county, region, city, states, 
+customer address, zipcode, lat, longs, carrier options to be chosen, etc.
+

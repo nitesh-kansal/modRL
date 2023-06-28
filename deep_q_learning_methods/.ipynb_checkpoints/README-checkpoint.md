@@ -1,8 +1,12 @@
+[//]: # (Image References)
+
+[image1]: https://user-images.githubusercontent.com/10624937/42135619-d90f2f28-7d12-11e8-8823-82b970a54d7e.gif "Trained Agent"
+[image2]: https://user-images.githubusercontent.com/10624937/42386929-76f671f0-8106-11e8-9376-f17da2ae852e.png "Kernel"
+
 ### Introduction
 
-This repository provides python implementation of Deep Q-Learning and Policy Gradient Methods for solving various RL based problems in which the states, actions, rewards are related by a transition probability distribution which is stationary in time (i.e. not changing over time and hence there is a single optimal policy to be found).
+This repository provides python implementation of Deep Q-Learning Methods for solving various RL based problems in which the states, actions, rewards are related by a transition probability distribution which is stationary in time (i.e. not changing over time and hence there is a single optimal policy to be found). The repository can currently be used to solve (maximize total expected reward)  environments (simulated or real) where the states are representated as n dimensional continuous features and actions take any of the known 'k' discrete values. The methods implemented in this repository are proven to perform at near human levels on various Atari games.
 
-### Deep Query Network (DQN)
 You can find easy to use implementation of vanilla Deep Q-Network (DQN) algorithm (from the early DeepMind [paper](https://storage.googleapis.com/deepmind-media/dqn/DQNNaturePaper.pdf)) and some of the early notable improvements over the basic method e.g.
 - Double DQN model: [click_here](https://arxiv.org/pdf/1509.06461.pdf).
 - Prioritized Replay: [click_here](https://arxiv.org/pdf/1511.05952.pdf).
@@ -10,20 +14,78 @@ You can find easy to use implementation of vanilla Deep Q-Network (DQN) algorith
 - Boltzman or Softmax Action Selection: [click_here](https://proceedings.neurips.cc/paper/2017/file/b299ad862b6f12cb57679f0538eca514-Paper.pdf)
 - More Improvements coming
 
-### Policy Gradients
+There are example notebooks in repository in which we have show how to use the repository in order to solve some of the challenging environments available in OpenAI Gym and Unity ML-Agents. Furthermore, in this repository you can easily choose the improvements which you want to keep and switch the unwanted once off while training the Agent.
 
+### The Banana Collector Environment
 
-There are example notebooks in repository in which we have shown how to use the repository in order to solve some of the challenging environments available in OpenAI Gym and Unity ML-Agents. Furthermore, in this repository you can easily choose the improvements which you want to keep and switch the unwanted once off while training the Agent.
+The task is to train an Agent to navigate in a large square world and collect banana present at various location in it. The environment is as shown in the clip below.
+
+![Trained Agent][image1]
+
+A reward of +1 is provided for collecting a yellow banana, and a reward of -1 is provided for collecting a blue banana.  Thus, the goal of your agent is to collect as many yellow bananas as possible while avoiding blue bananas.  
+
+The same environment is made available by Udacity in two different versions, one in which the states are in raw format i.e. (1 X 84 X 84 X 3) dimensional numpy array representing the intantenous frames visible to the agent, while in the other more simpler version the agent is made available with states which are 37 dimensional representations of the frames. Given this information, the agent has to learn how to best select actions.  Four discrete actions are available, corresponding to:
+- **`0`** - move forward.
+- **`1`** - move backward.
+- **`2`** - turn left.
+- **`3`** - turn right.
+
+The task is episodic, and in order to solve the environment, your agent must get an average score of 13+ over 100 consecutive episodes.
 
 ### Installation Instructions
 
 #### Setting up python environment
 
-1. Clone the repository.  Then, install several dependencies.
+1. Create (and activate) a new environment with Python 3.6.
+	- __Linux__ or __Mac__: 
+	```bash
+	conda create --name drlnd python=3.6
+	source activate drlnd
+	```
+	- __Windows__: 
+	```bash
+	conda create --name drlnd python=3.6 
+	activate drlnd
+	```
+
+2. Clone the repository.  Then, install several dependencies.
 ```bash
-git clone https://github.com/nitesh-kansal/modRL.git
+git clone https://github.com/nitesh-kansal/Deep_q_learning.git
+cd Deep_q_learning/python
+pip install .
 ```
-2. Installing pytorch. Please visit [official page](https://pytorch.org/) of pytorch to find the appropriate conda command for your system.
+3. Installing pytorch. Please visit [official page](https://pytorch.org/) of pytorch to find the appropriate conda command for your system.
+
+4. Create an [IPython kernel](http://ipython.readthedocs.io/en/stable/install/kernel_install.html) for the `drlnd` environment.  
+```bash
+python -m ipykernel install --user --name drlnd --display-name "drlnd"
+```
+
+5. Before running code in a notebook, change the kernel to match the `drlnd` environment by using the drop-down `Kernel` menu. 
+
+![Kernel][image2]
+
+#### Downloading Banana Collector Environment
+
+1. To download and solve the easier environment in which states are in transformed form (37 dimensional), choose from one of the links below.  You need only select the environment that matches your operating system:
+    - Linux: [click here](https://s3-us-west-1.amazonaws.com/udacity-drlnd/P1/Banana/Banana_Linux.zip)
+    - Mac OSX: [click here](https://s3-us-west-1.amazonaws.com/udacity-drlnd/P1/Banana/Banana.app.zip)
+    - Windows (32-bit): [click here](https://s3-us-west-1.amazonaws.com/udacity-drlnd/P1/Banana/Banana_Windows_x86.zip)
+    - Windows (64-bit): [click here](https://s3-us-west-1.amazonaws.com/udacity-drlnd/P1/Banana/Banana_Windows_x86_64.zip)
+    
+    (_For Windows users_) Check out [this link](https://support.microsoft.com/en-us/help/827218/how-to-determine-whether-a-computer-is-running-a-32-bit-version-or-64) if you need help with determining if your computer is running a 32-bit version or 64-bit version of the Windows operating system.
+
+    (_For AWS_) If you'd like to train the agent on AWS (and have not [enabled a virtual screen](https://github.com/Unity-Technologies/ml-agents/blob/master/docs/Training-on-Amazon-Web-Service.md)), then please use [this link](https://s3-us-west-1.amazonaws.com/udacity-drlnd/P1/Banana/Banana_Linux_NoVis.zip) to obtain the environment.
+    
+2. To download and solve the harder environment in which states correspond to raw pixels (1 X 84 X 84 X 3 dimensional rgb images), choose from one of the links below. You need only select the environment that matches your operating system:
+    - Linux: [click here](https://s3-us-west-1.amazonaws.com/udacity-drlnd/P1/Banana/VisualBanana_Linux.zip)
+    - Mac OSX: [click here](https://s3-us-west-1.amazonaws.com/udacity-drlnd/P1/Banana/VisualBanana.app.zip)
+    - Windows (32-bit): [click here](https://s3-us-west-1.amazonaws.com/udacity-drlnd/P1/Banana/VisualBanana_Windows_x86.zip)
+    - Windows (64-bit): [click here](https://s3-us-west-1.amazonaws.com/udacity-drlnd/P1/Banana/VisualBanana_Windows_x86_64.zip)
+
+3. Place the downloaded environment file in the root directory of the repository i.e. in  `Deep_q_learning/` folder, and unzip (or decompress) the file. 
+
+4. Note, you may have to give extra permissions to the environment to access inputs from sources other than the keyboard and produce outputs on destinations other than the usual.
 
 #### How to use the Implementation?
 
@@ -95,4 +157,4 @@ output_scores, agent, optimal_selection_p  =
 score_plot(output_scores, optimal_selection_p)  # this is a python utility that we have created for ploting the scores, you can find this in Report.ipynb notebook.
 </code></pre>
 
-DQN weights will be present in the checkpoint.pth file in the same directory where you executed the above code.
+DQN weights will be present in the checkpoint.pth file in the same directory where you executed the above code.# modular_rl
